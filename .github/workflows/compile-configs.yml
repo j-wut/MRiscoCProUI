@@ -397,7 +397,6 @@ jobs:
         chip: [GD32,N32]
         temp: [true,false]
         tjc: [true,false]
-        inshape: [true,false]
     steps:
     - uses: actions/checkout@v3
     - name: Setup node
@@ -429,11 +428,10 @@ jobs:
     - name: Run PlatformIO
       id: build_configs
       run: |
-        if ($IS); then TP = false; ISTMP=-IS; else ISTMP=; fi;
         if ($TP); then TPTMP=-MPC; else TPTMP=; fi;
         if [ "$AQUILA_VER" = GD32 ]; then AVTMP="GD32"; else AVTMP="N32"; fi;
         if ($TJC); then DTMP=-TJC; else DTMP=; fi;
-        echo "filename=Aquila${DTMP}_${AVTMP}_BLT-ProUI${TPTMP}${ISTMP}.bin" >> $GITHUB_OUTPUT
+        echo "filename=Aquila${DTMP}_${AVTMP}_BLT-ProUI${TPTMP}.bin" >> $GITHUB_OUTPUT
         > Marlin/Configuration.h
         > Marlin/Configuration_adv.h
         > Marlin/Version.h
@@ -443,12 +441,9 @@ jobs:
         sed -i "s/default_envs =.*/default_envs = ${AQUILA_VER}F103RC_voxelab_maple/g" platformio.ini
         if ($TP); then PTEMP='\/\/'; else PTEMP=; fi;
         if ($TP); then MTEMP=; else MTEMP='\/\/'; fi;
-        if ($IS); then TEMP=; else TEMP='\/\/'; fi;
         sed -i "s/[^ ]*#define PIDTEMP/$PTEMP#define PIDTEMP/g" Marlin/Configuration.h
         sed -i "s/[^ ]*#define MPCTEMP/$MTEMP#define MPCTEMP/g" Marlin/Configuration.h
         sed -i "s/[^ ]*#define NOZZLE_CLEAN_FEATURE/$PTEMP#define NOZZLE_CLEAN_FEATURE/g" Marlin/Configuration.h
-        sed -i "s/[^ ]*#define INPUT_SHAPING_X/$TEMP#define INPUT_SHAPING_X/g" Marlin/Configuration_adv.h
-        sed -i "s/[^ ]*#define INPUT_SHAPING_Y/$TEMP#define INPUT_SHAPING_Y/g" Marlin/Configuration_adv.h
         if ($TJC); then TJEMP=; REMP='\/\/'; else TJEMP='\/\/'; REMP=; fi;
         sed -i "s/[^ ]*#define TJC_DISPLAY/$TJEMP#define TJC_DISPLAY/g" Marlin/Configuration.h
         sed -i "s/[^ ]*#define REVERSE_ENCODER_DIRECTION/$REMP#define REVERSE_ENCODER_DIRECTION/g" Marlin/Configuration.h
@@ -459,7 +454,6 @@ jobs:
         AQUILA_VER: ${{ matrix.chip }}
         TP: ${{ matrix.temp }}
         TJC: ${{ matrix.tjc }}
-        IS: ${{ matrix.inshape }}
     - name: Get release
       id: get_release
       uses: bruceadams/get-release@v1.3.2
