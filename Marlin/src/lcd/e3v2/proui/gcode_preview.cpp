@@ -29,14 +29,13 @@
 
 #include "../../../inc/MarlinConfigPre.h"
 
-#if ALL(DWIN_LCD_PROUI, HAS_GCODE_PREVIEW_NOPRO)
+#if ALL(DWIN_LCD_PROUI, HAS_GCODE_PREVIEW)
 
-#include "gcode_preview_nopro.h"
+#include "gcode_preview.h"
 
 #include "../../../core/types.h"
 #include "../../marlinui.h"
 #include "../../../sd/cardreader.h"
-#include "../../../MarlinCore.h" // for wait_for_user
 #include "dwin.h"
 #include "dwin_popup.h"
 #include "base64.h"
@@ -44,38 +43,27 @@
 #define THUMBWIDTH 200
 #define THUMBHEIGHT 200
 
-Preview preview;
-
-typedef struct {
-  char name[13] = "";   // 8.3 + null
-  uint32_t thumbstart = 0;
-  int thumbsize = 0;
-  int thumbheight = 0, thumbwidth = 0;
-  float time = 0;
-  float filament = 0;
-  float layer = 0;
-  float width = 0, height = 0, length = 0;
-
-  void setname(const char * const fn) {
-    const uint8_t len = _MIN(sizeof(name) - 1, strlen(fn));
-    memcpy(name, fn, len);
-    name[len] = '\0';
-  }
-
-  void clear() {
-    name[0] = '\0';
-    thumbstart = 0;
-    thumbsize = 0;
-    thumbheight = thumbwidth = 0;
-    time = 0;
-    filament = 0;
-    layer = 0;
-    height = width = length = 0;
-  }
-
-} fileprop_t;
-
+// When `getLine`, `getValue`, `getFileHeader` are enabled - uncomment this
+// ??? what they do... Maybe Laser related?
+//IF_DISABLED(PROUI_EX, fileprop_t fileprop;)
 fileprop_t fileprop;
+
+void fileprop_t::setnames(const char * const fn) {
+  const uint8_t len = _MIN(sizeof(name) - 1, strlen(fn));
+  memcpy(name, fn, len);
+  name[len] = '\0';
+}
+
+void fileprop_t::clears() {
+  name[0] = '\0';
+  thumbstart = 0;
+  thumbsize = 0;
+  thumbheight = thumbwidth = 0;
+  time = 0;
+  filament = 0;
+  layer = 0;
+  height = width = length = 0;
+}
 
 void getValue(const char * const buf, PGM_P const key, float &value) {
   if (value != 0.0f) return;
@@ -102,8 +90,8 @@ bool Preview::hasPreview() {
   uint32_t indx = 0;
   float tmp = 0;
 
-  fileprop.clear();
-  fileprop.setname(card.filename);
+  fileprop.clears();
+  fileprop.setnames(card.filename);
 
   card.openFileRead(fileprop.name);
 
@@ -181,11 +169,7 @@ bool Preview::hasPreview() {
 }
 
 void Preview::drawFromSD() {
-  if (!hasPreview()) {
-    HMI_flag.select_flag = 1;
-    wait_for_user = false;
-    return;
-  }
+  hasPreview();
 
   MString<45> buf;
   DWIN_Draw_Rectangle(1, HMI_data.Background_Color, 0, 0, DWIN_WIDTH, STATUS_Y - 1);
@@ -205,10 +189,18 @@ void Preview::drawFromSD() {
     buf.set(F("Volume: "), p_float_t(fileprop.width, 1), 'x', p_float_t(fileprop.length, 1), 'x', p_float_t(fileprop.height, 1), F(" mm"));
     DWINUI::Draw_String(20, 70, &buf);
   }
+  
+  if (!fileprop.thumbsize) {
+    const uint8_t xpos = ((DWIN_WIDTH)  / 2) - 55,  // 55 = iconW/2
+                  ypos = ((DWIN_HEIGHT)  / 2) - 125;
+    DWINUI::Draw_Icon(ICON_Info_0, xpos, ypos);
+    buf.set(PSTR("No " STRINGIFY(THUMBWIDTH) "x" STRINGIFY(THUMBHEIGHT) " Thumbnail"));
+    DWINUI::Draw_CenteredString(false, (DWINUI::fontid*3), DWINUI::textcolor, DWINUI::backcolor, 0, DWIN_WIDTH, (DWIN_HEIGHT / 2), &buf);
+  }
   DWINUI::Draw_Button(BTN_Print, 26, 290);
   DWINUI::Draw_Button(BTN_Cancel, 146, 290);
-  show();
-  Draw_Select_Highlight(true, 290);
+  if (fileprop.thumbsize) show();
+  Draw_Select_Highlight(false, 290);
   DWIN_UpdateLCD();
 }
 

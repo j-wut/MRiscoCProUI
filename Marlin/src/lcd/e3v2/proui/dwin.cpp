@@ -59,7 +59,7 @@
   #include "../../../feature/host_actions.h"
 #endif
 
-#if HAS_MESH || HAS_BED_PROBE
+#if ANY(HAS_MESH, HAS_BED_PROBE)
   #include "../../../feature/bedlevel/bedlevel.h"
   #include "bedlevel_tools.h"
 #endif
@@ -96,11 +96,8 @@
   #include "../../../feature/tmc_util.h"
 #endif
 
-#if HAS_GCODE_PREVIEW
-  #include "file_header.h"
+#if ANY(HAS_GCODE_PREVIEW, CV_LASER_MODULE)
   #include "gcode_preview.h"
-#elif HAS_GCODE_PREVIEW_NOPRO
-  #include "gcode_preview_nopro.h"
 #endif
 
 #if HAS_TOOLBAR
@@ -630,12 +627,6 @@ void Draw_PrintDone() {
   DWINUI::ClearMainArea();
   DWIN_Print_Header(nullptr);
   #if HAS_GCODE_PREVIEW
-    const bool haspreview = Preview_Valid();
-    if (haspreview) {
-      Preview_Show();
-      DWINUI::Draw_Button(BTN_Continue, 86, 295, true);
-    }
-  #elif HAS_GCODE_PREVIEW_NOPRO
     const bool haspreview = preview.valid();
     if (haspreview) {
       preview.show();
@@ -1843,14 +1834,13 @@ void DWIN_LevelingDone() {
 // Started a Print Job
 void DWIN_Print_Started() {
   DEBUG_ECHOLNPGM("DWIN_Print_Started: ", SD_Printing());
-  TERN_(HAS_GCODE_PREVIEW, if (Host_Printing()) { Preview_Invalidate(); })
-  TERN_(HAS_GCODE_PREVIEW_NOPRO, if (Host_Printing()) { preview.invalidate(); })
+  TERN_(HAS_GCODE_PREVIEW, if (Host_Printing()) { preview.invalidate(); })
   ui.progress_reset();
   ui.reset_remaining_time();
   HMI_flag.pause_flag = false;
   HMI_flag.abort_flag = false;
   select_print.reset();
-  #if PROUI_EX
+  #if PROUI_EX && HAS_GCODE_PREVIEW
     if (!fileprop.isConfig) { Goto_PrintProcess(); }
   #else
     Goto_PrintProcess();
@@ -1876,7 +1866,7 @@ void DWIN_Print_Finished() {
   HMI_flag.abort_flag = false;
   HMI_flag.pause_flag = false;
   wait_for_heatup = false;
-  #if PROUI_EX
+  #if PROUI_EX && HAS_GCODE_PREVIEW
     if (!fileprop.isConfig) { Goto_PrintDone(); }
     else { fileprop.isConfig = false; }
   #else
@@ -2039,7 +2029,7 @@ void DWIN_SetDataDefaults() {
     #endif
   #endif
   TERN_(ADAPTIVE_STEP_SMOOTHING, HMI_data.AdaptiveStepSmoothing = true;)
-  #if HAS_GCODE_PREVIEW || HAS_GCODE_PREVIEW_NOPRO
+  #if HAS_GCODE_PREVIEW
     HMI_data.EnablePreview = true;
   #endif
   #if PROUI_EX
@@ -2281,7 +2271,7 @@ void DWIN_RedrawScreen() {
 
 #endif // HAS_LOCKSCREEN
 
-#if HAS_GCODE_PREVIEW || HAS_GCODE_PREVIEW_NOPRO
+#if HAS_GCODE_PREVIEW
 
   void SetPreview() { Toggle_Chkb_Line(HMI_data.EnablePreview); }
 
@@ -2299,11 +2289,11 @@ void DWIN_RedrawScreen() {
 #endif
 
 void Goto_ConfirmToPrint() {
-  #if PROUI_EX
-    fileprop.clear();
-    fileprop.setname(card.filename);
+  #if PROUI_EX && HAS_GCODE_PREVIEW
+    fileprop.clears();
+    fileprop.setnames(card.filename);
     card.openFileRead(fileprop.name, 100);
-    getFileHeader();
+    //getFileHeader(); // no idea what this does
     card.closefile();
     if (fileprop.isConfig) return card.openAndPrintFile(card.filename);
   #endif
@@ -2318,8 +2308,6 @@ void Goto_ConfirmToPrint() {
       LaserOn(false); // If it is not laser file turn off laser mode
   #endif
   #if HAS_GCODE_PREVIEW
-    if (HMI_data.EnablePreview) return Goto_Popup(Preview_DrawFromSD, onClick_ConfirmToPrint);
-  #elif HAS_GCODE_PREVIEW_NOPRO
     if (HMI_data.EnablePreview) return Goto_Popup(preview.drawFromSD, onClick_ConfirmToPrint);
   #endif
   card.openAndPrintFile(card.filename); // Direct print SD file
@@ -4522,7 +4510,7 @@ void Draw_AdvancedSettings_Menu() {
       EDIT_ITEM(ICON_Sound, MSG_TICK, onDrawChkbMenu, SetEnableTick, &ui.tick_on);
       EDIT_ITEM(ICON_Sound, MSG_SOUND, onDrawChkbMenu, SetEnableSound, &ui.sound_on);
     #endif
-    #if HAS_GCODE_PREVIEW || HAS_GCODE_PREVIEW_NOPRO
+    #if HAS_GCODE_PREVIEW
       EDIT_ITEM(ICON_File, MSG_HAS_PREVIEW, onDrawChkbMenu, SetPreview, &HMI_data.EnablePreview);
     #endif
     #if ENABLED(BAUD_RATE_GCODE)
@@ -4577,7 +4565,7 @@ void Draw_Advanced_Menu() { // From Control_Menu (Control) || Default-NP Advance
       EDIT_ITEM(ICON_Sound, MSG_TICK, onDrawChkbMenu, SetEnableTick, &ui.tick_on);
       EDIT_ITEM(ICON_Sound, MSG_SOUND, onDrawChkbMenu, SetEnableSound, &ui.sound_on);
     #endif
-    #if HAS_GCODE_PREVIEW || HAS_GCODE_PREVIEW_NOPRO
+    #if HAS_GCODE_PREVIEW
       EDIT_ITEM(ICON_File, MSG_HAS_PREVIEW, onDrawChkbMenu, SetPreview, &HMI_data.EnablePreview);
     #endif
     #if ENABLED(BAUD_RATE_GCODE)
