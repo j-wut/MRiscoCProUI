@@ -2017,7 +2017,7 @@ void DWIN_SetDataDefaults() {
     HMI_data.MediaSort = true;
     card.setSortOn(TERN(SDSORT_REVERSE, AS_REV, AS_FWD));
   #endif
-  TERN_(HAS_SD_EXTENDER, HMI_data.MediaAutoMount = false;)
+  TERN_(HAS_SD_EXTENDER, HMI_data.MediaAutoMount = TERN(PROUI_EX, false, true);)
   #if ALL(INDIVIDUAL_AXIS_HOMING_SUBMENU, MESH_BED_LEVELING)
     HMI_data.z_after_homing = DEF_Z_AFTER_HOMING;
   #endif
@@ -2148,6 +2148,8 @@ void DWIN_InitScreen() {
   #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
   bedLevelTools.mesh_reset();
   #endif
+  TERN_(LASER_SYNCHRONOUS_M106_M107, thermalManager.set_fan_speed(0, 0);
+  planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS);)
   LCD_MESSAGE(WELCOME_MSG);
 }
 
@@ -2663,7 +2665,7 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 #endif
 
 #if HAS_FAN
-  void ApplyFanSpeed() { thermalManager.set_fan_speed(0, MenuData.Value); }
+  void ApplyFanSpeed() { thermalManager.set_fan_speed(0, MenuData.Value); TERN_(LASER_SYNCHRONOUS_M106_M107, planner.buffer_sync_block(BLOCK_BIT_SYNC_FANS));}
   void SetFanSpeed() { SetIntOnClick(0, 255, thermalManager.fan_speed[0], ApplyFanSpeed); }
 #endif
 
@@ -2674,7 +2676,7 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
   }
   void RaiseHead() {
     char cmd[20] = "";
-    sprintf_P(cmd, PSTR("Raise Z by %i"), TERN(NOZZLE_PARK_FEATURE, NOZZLE_PARK_Z_RAISE_MIN, Z_POST_CLEARANCE));
+    sprintf_P(cmd, PSTR("Raise Z by %i"), NOZZLE_PARK_Z_RAISE_MIN);
     LCD_MESSAGE_F(cmd);
     queue.inject(F("G27 P3"));
   }
