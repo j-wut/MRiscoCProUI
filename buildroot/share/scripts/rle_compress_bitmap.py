@@ -69,47 +69,60 @@ def addCompressedData(input_file, output_file):
     #   - A value of 16 indicates a run of 16-270 calculated using the next two bytes.
     #
     def bitwise_rle_encode(data):
-        warn = "This may take a while" if len(data) > 300000 else ""
-        print("Compressing image data...", warn)
 
         def get_bit(data, n): return 1 if (data[n // 8] & (0x80 >> (n & 7))) else 0
 
-        bitslen = len(data) * 8
-        bitstate = get_bit(data, 0)
-        rledata = [ bitstate ]
+        def try_encode(data, isext):
+            bitslen = len(data) * 8
+            bitstate = get_bit(data, 0)
+            rledata = [ bitstate ]
+            bigrun = 256 if isext else 272
+            medrun = False
 
-        i = 0
-        runlen = -1
-        while i <= bitslen:
-            if i < bitslen: b = get_bit(data, i)
-            runlen += 1
-            if bitstate != b or i == bitslen:
-                if i > 11 * 56 * 8: print(f'Bit change at index {i} with runlen={runlen}')
-                if runlen >= 16:
-                    rledata += [ 15, runlen // 16 - 1, runlen % 16 ]
-                    if i > 11 * 56 * 8: print(f'Storing {[ 15, runlen // 16 - 1, runlen % 16 ]}')
-                else:
-                    rledata += [ runlen - 1 ]
-                    if i > 11 * 56 * 8: print(f'Storing {[ runlen ]}')
-                bitstate ^= 1
-                runlen = 0
-            i += 1
+            i = 0
+            runlen = -1
+            while i <= bitslen:
+                if i < bitslen: b = get_bit(data, i)
+                runlen += 1
+                if bitstate != b or i == bitslen:
+                    if runlen >= bigrun:
+                        isext = True
+                        if medrun: return [], isext
+                        rem = runlen & 0xFF
+                        rledata += [ 15, 15, rem // 16, rem % 16 ]
+                    elif runlen >= 16:
+                        rledata += [ 15, runlen // 16 - 1, runlen % 16 ]
+                        if runlen >= 256: medrun = True
+                    else:
+                        rledata += [ runlen - 1 ]
+                    bitstate ^= 1
+                    runlen = 0
+                i += 1
 
-        print("\nrledata", rledata)
+            #print("\nrledata", rledata)
 
-        encoded = []
-        ri = 0
-        rlen = len(rledata)
-        while ri < rlen:
-            v = rledata[ri] << 4
-            if (ri < rlen - 1): v |= rledata[ri + 1]
-            encoded += [ v ]
-            ri += 2
+            encoded = []
+            ri = 0
+            rlen = len(rledata)
+            while ri < rlen:
+                v = rledata[ri] << 4
+                if (ri < rlen - 1): v |= rledata[ri + 1]
+                encoded += [ v ]
+                ri += 2
 
-        print("\nencoded", encoded)
-        return encoded
+            #print("\nencoded", encoded)
+            return encoded, isext
 
-    def bitwise_rle_decode(rledata, invert=0):
+        # Try to encode with the original isext flag
+        warn = "This may take a while" if len(data) > 300000 else ""
+        print("Compressing image data...", warn)
+        isext = False
+        encoded, isext = try_encode(data, isext)
+        if len(encoded) == 0:
+            encoded, isext = try_encode(data, True)
+        return encoded, isext
+
+    def bitwise_rle_decode(isext, rledata, invert=0):
         expanded = []
         for n in rledata: expanded += [ n >> 4, n & 0xF ]
 
@@ -123,7 +136,12 @@ def addCompressedData(input_file, output_file):
             if i == 1: bitstate = c ; continue
 
             if c == 15:
-                c = 16 * expanded[i] + expanded[i + 1] + 15
+                d = expanded[i] ; e = expanded[i + 1]
+                if isext and d == 15:
+                    c = 256 + 16 * e + expanded[i + 2] - 1
+                    i += 1
+                else:
+                    c = 16 * d + e + 15
                 i += 2
 
             for _ in range(c, -1, -1):
@@ -143,7 +161,7 @@ def addCompressedData(input_file, output_file):
 
         return decoded
 
-    def rle_emit(ofile, arrname, rledata, rawsize):
+    def rle_emit(ofile, arrname, rledata, rawsize, isext):
 
         outstr = ''
         rows = [ rledata[i:i+16] for i in range(0, len(rledata), 16) ]
@@ -153,21 +171,20 @@ def addCompressedData(input_file, output_file):
 
         outstr = outstr[:-2]
         size = len(rledata)
-        ofile.write("\n// Saves %i bytes\n%s %s_rle[%d] PROGMEM = {\n%s\n};\n" % (rawsize - size, datatype, arrname, size, outstr))
+        defname = 'COMPACT_CUSTOM_BOOTSCREEN_EXT' if isext else 'COMPACT_CUSTOM_BOOTSCREEN'
+        ofile.write(f"\n// Saves {rawsize - size} bytes\n#define {defname}\n{datatype} {arrname}_rle[{size}] PROGMEM = {{\n{outstr}\n}};\n")
 
     # Encode the data, write it out, close the file
-    rledata = bitwise_rle_encode(raw_data)
-    rle_emit(ofile, arrname, rledata, len(raw_data))
+    rledata, isext = bitwise_rle_encode(raw_data)
+    rle_emit(ofile, arrname, rledata, len(raw_data), isext)
     ofile.close()
 
     # Validate that code properly compressed (and decompressed) the data
-    checkdata = bitwise_rle_decode(rledata)
-    badindex = -1
+    checkdata = bitwise_rle_decode(isext, rledata)
     for i in range(0, len(checkdata)):
         if raw_data[i] != checkdata[i]:
-            badindex = i
+            print(f'Data mismatch at byte offset {i} (should be {raw_data[i]} but got {checkdata[i]})')
             break
-    if badindex >= 0: print(f'Data mismatch at byte {badindex}')
 
 if len(sys.argv) <= 2:
     print('Usage: rle_compress_bitmap.py INPUT_FILE OUTPUT_FILE')
