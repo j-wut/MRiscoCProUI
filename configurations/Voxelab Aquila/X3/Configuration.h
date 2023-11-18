@@ -3451,7 +3451,7 @@
   #endif
   //#define PLR_TUNE_ITEM       // Power-loss Recovery option in Tune Menu (POWER_LOSS_RECOVERY 3400 bytes of flash)
   //#define JD_TUNE_ITEM        // Juntion Deviation item in Tune Menu (only if JD is enabled)
-  #define ADVK_TUNE_ITEM        // Linear Advance item in Tune Menu (only if JD is enabled)
+  #define ADVK_TUNE_ITEM        // Linear Advance item in Tune Menu (only if LA is enabled)
   #define SHOW_REAL_POS
   //#define CCLOUD_PRINT_SUPPORT// Menu item: enable/disable Creality Cloud Print Support (192 bytes of flash)
   #define TRAMWIZ_MENU_ITEM     // Menu item: enable Tramming Wizard (2304 bytes of flash)
