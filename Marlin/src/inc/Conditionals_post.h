@@ -2944,7 +2944,7 @@
 /**
  * Bed Probe dependencies
  */
-#if !DWIN_LCD_PROUI && ANY(BABYSTEPPING, HAS_BED_PROBE)
+#if DISABLED(DWIN_LCD_PROUI) && ANY(BABYSTEPPING, HAS_BED_PROBE)
   #define HAS_ZOFFSET_ITEM 1
 #endif
 
