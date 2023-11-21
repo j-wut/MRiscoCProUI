@@ -23,11 +23,10 @@
 
 #if ALL(DWIN_LCD_PROUI, HAS_MESH)
 
-#include "../../../core/types.h"
 #include "../../marlinui.h"
+#include "../../../feature/bedlevel/bedlevel.h"
 #include "dwin.h"
 #include "dwin_popup.h"
-#include "../../../feature/bedlevel/bedlevel.h"
 #include "meshviewer.h"
 
 #if USE_GRID_MESHVIEWER

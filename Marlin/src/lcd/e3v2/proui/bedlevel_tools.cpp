@@ -27,7 +27,6 @@
 #if ALL(DWIN_LCD_PROUI, HAS_LEVELING)
 
 #include "../../marlinui.h"
-#include "../../../core/types.h"
 #include "../../../feature/bedlevel/bedlevel.h"
 #include "../../../module/probe.h"
 #include "../../../gcode/gcode.h"
@@ -37,7 +36,6 @@
 #include "../../../libs/vector_3.h"
 
 #include "dwin.h"
-#include "dwinui.h"
 #include "dwin_popup.h"
 #include "bedlevel_tools.h"
 
@@ -182,7 +180,7 @@ float BedLevelToolsClass::get_min_value() {
 bool BedLevelToolsClass::meshValidate() {
   GRID_LOOP(x, y) {
     const float v = bedlevel.z_values[x][y];
-    if (isnan(v) || !WITHIN(v, UBL_Z_OFFSET_MIN, UBL_Z_OFFSET_MAX)) return false;
+    if (isnan(v) || !WITHIN(v, Z_OFFSET_MIN, Z_OFFSET_MAX)) return false;
   }
   return true;
 }

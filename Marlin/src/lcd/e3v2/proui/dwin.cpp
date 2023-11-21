@@ -4170,8 +4170,6 @@ void Draw_GetColor_Menu() {
 
   #if ENABLED(MESH_EDIT_MENU)
     bool AutoMovToMesh = false;
-    #define Z_OFFSET_MIN -3
-    #define Z_OFFSET_MAX  3
 
     void manualResetValue() {
       gcode.process_subcommands_now(

@@ -24,7 +24,6 @@
 #if ALL(DWIN_LCD_PROUI, HAS_CGCODE)
 
 #include "../../../MarlinCore.h" // for wait_for_user
-#include "../../../core/types.h"
 #include "../../../gcode/gcode.h"
 #include "../../../libs/buzzer.h"
 #include "../../marlinui.h"
