@@ -45,11 +45,7 @@ uint8_t rmax;                               // Maximum radius
 #define px(xp) (margin + (xp) * (width) / (sizex - 1))
 #define py(yp) (30 + DWIN_WIDTH - margin - (yp) * (width) / (sizey - 1))
 
-#if ENABLED(TJC_DISPLAY)
-  #define meshfont font8x16
-#else
-  #define meshfont font6x12
-#endif
+constexpr uint8_t meshfont = TERN(TJC_DISPLAY, font8x16, font6x12);
 
 MeshViewerClass MeshViewer;
 

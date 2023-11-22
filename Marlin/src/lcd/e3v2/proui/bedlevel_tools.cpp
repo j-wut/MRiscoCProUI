@@ -187,17 +187,13 @@ bool BedLevelToolsClass::meshValidate() {
 
 #if ENABLED(USE_GRID_MESHVIEWER)
 
-  #if ENABLED(TJC_DISPLAY)
-    #define meshfont font8x16
-  #else
-    #define meshfont font6x12
-  #endif
+  constexpr uint8_t meshfont = TERN(TJC_DISPLAY, font8x16, font6x12);
 
   void BedLevelToolsClass::Draw_Bed_Mesh(int16_t selected/*=-1*/, uint8_t gridline_width/*=1*/, uint16_t padding_x/*=8*/, uint16_t padding_y_top/*=(40 + 53 - 7)*/) {
     drawing_mesh = true;
-    const uint16_t total_width_px = DWIN_WIDTH - padding_x - padding_x;
-    const uint16_t cell_width_px  = total_width_px / (GRID_MAX_POINTS_X);
-    const uint16_t cell_height_px = total_width_px / (GRID_MAX_POINTS_Y);
+    const uint16_t total_width_px = DWIN_WIDTH - padding_x - padding_x,
+                   cell_width_px  = total_width_px / (GRID_MAX_POINTS_X),
+                   cell_height_px = total_width_px / (GRID_MAX_POINTS_Y);
     const float v_max = abs(get_max_value()), v_min = abs(get_min_value()), rmax = _MAX(v_min, v_max);
 
     // Clear background from previous selection and select new square
@@ -229,7 +225,8 @@ bool BedLevelToolsClass::meshValidate() {
 
       // Draw value text on
       const uint8_t fs = DWINUI::fontWidth(meshfont);
-      xy_long_t offset { 0, cell_height_px / 2 - fs };
+      xy_uint_t offset;
+      offset.y = cell_height_px / 2 - fs;
       if (isnan(bedlevel.z_values[x][y])) {  // undefined
         DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px + cell_width_px / 2 - 5, start_y_px + offset.y, F("X"));
       }
