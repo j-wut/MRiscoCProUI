@@ -35,7 +35,6 @@
 
 #include "../../marlinui.h"
 #include "../../../sd/cardreader.h"
-#include "dwin.h"
 #include "dwin_popup.h"
 #include "base64.h"
 

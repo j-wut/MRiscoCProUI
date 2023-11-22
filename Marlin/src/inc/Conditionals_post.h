@@ -539,7 +539,7 @@
   #endif
 
   // Extender cable doesn't support SD_DETECT_PIN
-   #if ANY(NO_SD_DETECT, HAS_SD_EXTENDER) && DISABLED(DWIN_LCD_PROUI)
+   #if ENABLED(NO_SD_DETECT) && DISABLED(DWIN_LCD_PROUI)
     #undef SD_DETECT_PIN
   #endif
 

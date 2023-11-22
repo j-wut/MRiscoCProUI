@@ -26,7 +26,6 @@
 #include "endstop_diag.h"
 
 #include "../../marlinui.h"
-#include "dwin.h"
 #include "dwin_popup.h"
 
 #if HAS_FILAMENT_SENSOR
