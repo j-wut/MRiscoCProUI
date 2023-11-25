@@ -585,11 +585,11 @@ namespace LanguageNarrow_en {
   LSTR MSG_TOOL_MIGRATION_END             = _UxGT("Last Extruder");
   LSTR MSG_TOOL_MIGRATION_SWAP            = _UxGT("Migrate to *");
   LSTR MSG_FILAMENTCHANGE                 = _UxGT("Change Filament");
-  LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Change Filament *");
+  LSTR MSG_FILAMENTCHANGE_E               = _UxGT("Change * Filament");
   LSTR MSG_FILAMENTLOAD                   = _UxGT("Load Filament");
-  LSTR MSG_FILAMENTLOAD_E                 = _UxGT("Load *");
+  LSTR MSG_FILAMENTLOAD_E                 = _UxGT("Load * Filament");
   LSTR MSG_FILAMENTUNLOAD                 = _UxGT("Unload Filament");
-  LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Unload *");
+  LSTR MSG_FILAMENTUNLOAD_E               = _UxGT("Unload * Filament");
   LSTR MSG_FILAMENTUNLOAD_ALL             = _UxGT("Unload All");
   LSTR MSG_ATTACH_MEDIA                   = _UxGT("Attach ") MEDIA_TYPE_EN;
   LSTR MSG_ATTACH_SD_MEDIA                = _UxGT("Attach SD Card");

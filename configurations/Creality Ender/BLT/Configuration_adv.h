@@ -1261,7 +1261,7 @@
  */
 //#define XY_FREQUENCY_LIMIT      10 // (Hz) Maximum frequency of small zigzag infill moves. Set with M201 F<hertz>.
 #ifdef XY_FREQUENCY_LIMIT
-  #define XY_FREQUENCY_MIN_PERCENT 5 // (percent) Minimum FR percentage to apply. Set with M201 G<min%>.
+  #define XY_FREQUENCY_MIN_PERCENT 5 // (%) Minimum FR percentage to apply. Set with M201 G<min%>.
 #endif
 
 //
@@ -1608,7 +1608,7 @@
   //#define SHOW_TEMPERATURE_BELOW_ZERO
 
   // Change Title Menu Text to Centered
-  //#define TITLE_CENTERED 
+  //#define TITLE_CENTERED
 
   /**
    * LED Control Menu
@@ -1637,6 +1637,15 @@
   #endif
 
 #endif // HAS_DISPLAY
+
+#if HAS_FEEDRATE_EDIT
+  #define SPEED_EDIT_MIN    10  // (%) Feedrate percentage edit range minimum
+  #define SPEED_EDIT_MAX   999  // (%) Feedrate percentage edit range maximum
+#endif
+#if HAS_FLOW_EDIT
+  #define FLOW_EDIT_MIN     10  // (%) Flow percentage edit range minimum
+  #define FLOW_EDIT_MAX    999  // (%) Flow percentage edit range maximum
+#endif
 
 // Add 'M73' to set print job progress, overrides Marlin's built-in estimate
 #define SET_PROGRESS_MANUALLY  // MRiscoC Allow display feedback of host printing through GCode M73
@@ -2249,7 +2258,7 @@
  */
 #define BABYSTEPPING  // Ender Configs
 #if ENABLED(BABYSTEPPING)
-  //#define EP_BABYSTEPPING                 // M293/M294 babystepping with EMERGENCY_PARSER support  
+  //#define EP_BABYSTEPPING                 // M293/M294 babystepping with EMERGENCY_PARSER support
   #define BABYSTEP_WITHOUT_HOMING           // MRiscoC Enabled BbS without home
   #define BABYSTEP_ALWAYS_AVAILABLE         // Allow babystepping at all times (not just during movement)  // MRiscoC Active BbS always
   //#define BABYSTEP_XY                     // Also enable X/Y Babystepping. Not supported on DELTA!

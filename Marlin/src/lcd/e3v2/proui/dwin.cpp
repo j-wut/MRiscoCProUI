@@ -128,16 +128,14 @@
 
 #define PAUSE_HEAT
 
-// Print speed limit
-#define MIN_PRINT_SPEED  10
-#define MAX_PRINT_SPEED 999
-
-// Print flow limit
-#define MIN_PRINT_FLOW   10
-#define MAX_PRINT_FLOW   299
-
 // Load and Unload limits
-#define MAX_LOAD_UNLOAD  500
+#ifndef EXTRUDE_MAXLENGTH
+  #ifdef FILAMENT_CHANGE_UNLOAD_LENGTH
+    #define EXTRUDE_MAXLENGTH (FILAMENT_CHANGE_UNLOAD_LENGTH + 10)
+  #else
+    #define EXTRUDE_MAXLENGTH 500
+  #endif
+#endif
 
 // Juntion deviation limits
 #define MIN_JD_MM             0.001
@@ -189,9 +187,7 @@ enum SelectItem : uint8_t {
   PAGE_PREPARE,
   PAGE_CONTROL,
   PAGE_ADVANCE,
-#if HAS_TOOLBAR
-  PAGE_TOOLBAR,
-#endif
+  OPTITEM(HAS_TOOLBAR, PAGE_TOOLBAR)
   PAGE_COUNT,
   PRINT_SETUP = 0,
   PRINT_PAUSE_RESUME,
@@ -2575,11 +2571,14 @@ void ApplyMove() {
     void SetProbeMultiple()  { SetIntOnClick(0, 4, PRO_data.multiple_probing, ApplyProbeMultiple); }
   #endif
 
-  void ProbeTest() {
-    DEBUG_ECHOLNPGM("M48 Probe Test");
-    LCD_MESSAGE(MSG_M48_TEST);
-    queue.inject(F("G28XYO\nG28Z\nM48 P5"));
-  }
+  #if ENABLED(Z_MIN_PROBE_REPEATABILITY_TEST)
+    void ProbeTest() {
+      DEBUG_ECHOLNPGM("M48 Probe Test");
+      LCD_MESSAGE(MSG_M48_TEST);
+      queue.inject(F("G28XYO\nG28Z\nM48 P5"));
+    }
+  #endif
+
   void ProbeStow() { probe.stow(); }
   void ProbeDeploy() { probe.deploy(); }
 
@@ -2625,8 +2624,8 @@ void ApplyMove() {
 #endif
 
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
-  void SetFilLoad()   { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
-  void SetFilUnload() { SetPFloatOnClick(0, MAX_LOAD_UNLOAD, UNITFDIGITS); }
+  void SetFilLoad()   { SetPFloatOnClick(0, EXTRUDE_MAXLENGTH, UNITFDIGITS); }
+  void SetFilUnload() { SetPFloatOnClick(0, EXTRUDE_MAXLENGTH, UNITFDIGITS); }
 #endif
 
 #if ENABLED(PREVENT_COLD_EXTRUSION)
@@ -2634,7 +2633,7 @@ void ApplyMove() {
   void SetExtMinT() { SetPIntOnClick(MIN_ETEMP, MAX_ETEMP, ApplyExtMinT); }
 #endif
 
-void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
+void SetSpeed() { SetPIntOnClick(SPEED_EDIT_MIN, SPEED_EDIT_MAX); }
 
 #if HAS_HOTEND
   void ApplyHotendTemp() { thermalManager.setTargetHotend(MenuData.Value, H_E0); }
@@ -2694,7 +2693,7 @@ void SetSpeed() { SetPIntOnClick(MIN_PRINT_SPEED, MAX_PRINT_SPEED); }
 
 #endif // ADVANCED_PAUSE_FEATURE
 
-void SetFlow() { SetPIntOnClick(MIN_PRINT_FLOW, MAX_PRINT_FLOW, []{ planner.refresh_e_factor(active_extruder); }); }
+void SetFlow() { SetPIntOnClick(FLOW_EDIT_MIN, FLOW_EDIT_MAX, []{ planner.refresh_e_factor(active_extruder); }); }
 
 #if ENABLED(SHOW_SPEED_IND)
   void SetSpdInd() { Toggle_Chkb_Line(HMI_data.SpdInd); }
