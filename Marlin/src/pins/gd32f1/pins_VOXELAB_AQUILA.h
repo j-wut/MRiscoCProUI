@@ -22,9 +22,9 @@
 #pragma once
 
 /**
- * FFP0173_Aquila_Main_Board_V1.0.1 (GD32F103RE / N32F103RC)
- * 
- * Uses CREALITY v4 (STM32F103RE / STM32F103RC) board pin assignments
+ * FFP0173_Aquila_Main_Board_V1.0.1 (GD32F103RC / N32G455RE)
+ *
+ * Uses CREALITY V4 (STM32F103RE / STM32F103RC) board pin assignments
  */
 
 #define BOARD_INFO_NAME      "Aquila v1.0.1"

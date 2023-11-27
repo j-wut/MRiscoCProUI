@@ -707,7 +707,7 @@
 /**
  * Maple environment
  */
-#if ENABLED(__STM32F1__) && DISABLED(NO_MAPLE_WARNING)
+#if __STM32F1__ && DISABLED(NO_MAPLE_WARNING)
   #warning "Maple build environments are deprecated. Please use a non-Maple build environment. Report issues to the Marlin Firmware project."
 #endif
 

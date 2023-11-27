@@ -1,10 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- *
  * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
- * Copyright (c) 2016 Bob Cousins bobcousins42@googlemail.com
- * Copyright (c) 2015-2016 Nico Tonnhofer wurstnase.reprap@gmail.com
- * Copyright (c) 2017 Victor Perez
+ *
+ * Based on Sprinter and grbl.
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -672,12 +671,12 @@ extern "C" {
 ====================================================================================================================================================================*/
 typedef struct
 {
-    uint32_t WorkMode; 
-    uint32_t MultiChEn; 
-    uint32_t ContinueConvEn; 
-    uint32_t ExtTrigSelect; 
-    uint32_t DatAlign; 
-    uint8_t ChsNumber; 
+    uint32_t WorkMode;
+    uint32_t MultiChEn;
+    uint32_t ContinueConvEn;
+    uint32_t ExtTrigSelect;
+    uint32_t DatAlign;
+    uint8_t ChsNumber;
 } ADC_InitType;
 
 typedef struct
@@ -787,9 +786,9 @@ typedef struct
 #define	ADC_RCC_CTRLSTS			  *((uint32_t*)(ADC_RCC_BASE + 0x24))
 #define	ADC_RCC_AHBPRST			  *((uint32_t*)(ADC_RCC_BASE + 0x28))
 #define	ADC_RCC_CFG2			    *((uint32_t*)(ADC_RCC_BASE + 0x2c))
-#define	ADC_RCC_CFG3			    *((uint32_t*)(ADC_RCC_BASE + 0x30))	
+#define	ADC_RCC_CFG3			    *((uint32_t*)(ADC_RCC_BASE + 0x30))
 
-#define	NS_PWR_CR3				    *((uint32_t*)(0x40007000 + 0x0C))	
+#define	NS_PWR_CR3				    *((uint32_t*)(0x40007000 + 0x0C))
 #define RCC_APB1Periph_PWR      ((uint32_t)0x10000000)
 
 ///////////////////////////////
@@ -814,7 +813,7 @@ typedef struct
 #define CFG2_ADCPLLPRES_SET_MASK    ((uint32_t)0x000001F0)
 #define CFG2_ADCPLLPRES_RESET_MASK  ((uint32_t)0xFFFFFE0F)
 #define CFG2_ADCHPRES_SET_MASK      ((uint32_t)0x0000000F)
-#define CFG2_ADCHPRES_RESET_MASK    ((uint32_t)0xFFFFFFF0)	
+#define CFG2_ADCHPRES_RESET_MASK    ((uint32_t)0xFFFFFFF0)
 
 
 #define RCC_ADCPLLCLK_DISABLE    ((uint32_t)0xFFFFFEFF)
@@ -933,17 +932,17 @@ typedef struct
 
 typedef struct
 {
-    uint32_t PeriphAddr; 
-    uint32_t MemAddr; 
-    uint32_t Direction; 
-    uint32_t BufSize; 
-    uint32_t PeriphInc; 
-    uint32_t DMA_MemoryInc; 
-    uint32_t PeriphDataSize; 
-    uint32_t MemDataSize; 
-    uint32_t CircularMode;          
-    uint32_t Priority; 
-    uint32_t Mem2Mem;                
+    uint32_t PeriphAddr;
+    uint32_t MemAddr;
+    uint32_t Direction;
+    uint32_t BufSize;
+    uint32_t PeriphInc;
+    uint32_t DMA_MemoryInc;
+    uint32_t PeriphDataSize;
+    uint32_t MemDataSize;
+    uint32_t CircularMode;
+    uint32_t Priority;
+    uint32_t Mem2Mem;
 } DMA_InitType;
 
 
@@ -1445,7 +1444,7 @@ void ADC_Init(ADC_Module* NS_ADCx, ADC_InitType* ADC_InitStruct)
 {
     uint32_t tmpreg1 = 0;
     uint8_t tmpreg2  = 0;
-    
+
     /*---------------------------- ADCx CTRL1 Configuration -----------------*/
     /* Get the ADCx CTRL1 value */
     tmpreg1 = NS_ADCx->CTRL1;
@@ -1495,7 +1494,7 @@ void ADC_DeInit(ADC_Module* NS_ADCx)
     if (NS_ADCx == NS_ADC1)
     {
         /* Enable ADC1 reset state */
-        reg_temp = ADC_RCC_AHBPRST;         
+        reg_temp = ADC_RCC_AHBPRST;
         reg_temp |= RCC_AHB_PERIPH_ADC1;
         ADC_RCC_AHBPRST = reg_temp;			          // ADC模块复位置位
         ADC_RCC_AHBPRST = 0x00000000;             // ADC模块复位清除
@@ -1503,7 +1502,7 @@ void ADC_DeInit(ADC_Module* NS_ADCx)
     else if (NS_ADCx == NS_ADC2)
     {
         /* Enable ADC2 reset state */
-        reg_temp = ADC_RCC_AHBPRST;         
+        reg_temp = ADC_RCC_AHBPRST;
         reg_temp |= RCC_AHB_PERIPH_ADC2;
         ADC_RCC_AHBPRST = reg_temp;			          // ADC模块复位置位
         ADC_RCC_AHBPRST = 0x00000000;             // ADC模块复位清除
@@ -1511,7 +1510,7 @@ void ADC_DeInit(ADC_Module* NS_ADCx)
     else if (NS_ADCx == NS_ADC3)
     {
         /* Enable ADC2 reset state */
-        reg_temp = ADC_RCC_AHBPRST;         
+        reg_temp = ADC_RCC_AHBPRST;
         reg_temp |= RCC_AHB_PERIPH_ADC3;
         ADC_RCC_AHBPRST = reg_temp;			          // ADC模块复位置位
         ADC_RCC_AHBPRST = 0x00000000;             // ADC模块复位清除
@@ -1519,7 +1518,7 @@ void ADC_DeInit(ADC_Module* NS_ADCx)
     else if (NS_ADCx == NS_ADC4)
     {
         /* Enable ADC3 reset state */
-        reg_temp = ADC_RCC_AHBPRST;         
+        reg_temp = ADC_RCC_AHBPRST;
         reg_temp |= RCC_AHB_PERIPH_ADC4;
         ADC_RCC_AHBPRST = reg_temp;			          // ADC模块复位置位
         ADC_RCC_AHBPRST = 0x00000000;             // ADC模块复位清除
@@ -1598,7 +1597,7 @@ void ADC_EnableDMA(ADC_Module* NS_ADCx, uint32_t Cmd)
 void ADC_ConfigInt(ADC_Module* NS_ADCx, uint16_t ADC_IT, uint32_t Cmd)
 {
     uint8_t itmask = 0;
-    
+
     /* Get the ADC IT index */
     itmask = (uint8_t)ADC_IT;
     if (Cmd != 0)
@@ -1619,7 +1618,7 @@ void ADC_ConfigInt(ADC_Module* NS_ADCx, uint16_t ADC_IT, uint32_t Cmd)
 uint32_t ADC_GetCalibrationStatus(ADC_Module* NS_ADCx)
 {
     uint32_t bitstatus = 0;
-  
+
     /* Check the status of CAL bit */
     if ((NS_ADCx->CTRL2 & CTRL2_CAL_SET) != (uint32_t)0)
     {
@@ -1757,7 +1756,7 @@ void ADC_EnableSoftwareStartConv(ADC_Module* NS_ADCx, uint32_t Cmd)
 uint32_t ADC_GetFlagStatus(ADC_Module* NS_ADCx, uint8_t ADC_FLAG)
 {
     uint32_t bitstatus = 0;
-    
+
     /* Check the status of the specified ADC flag */
     if ((NS_ADCx->STS & ADC_FLAG) != (uint8_t)0)
     {
@@ -1798,12 +1797,12 @@ uint16_t ADC_GetDat(ADC_Module* NS_ADCx)
 typedef struct
 {
 	__IO uint32_t CR;			/* 完全兼容 */
-	__IO uint32_t CFGR;			/* 不兼容：ADC频率不在这里设置 */									
+	__IO uint32_t CFGR;			/* 不兼容：ADC频率不在这里设置 */
 	__IO uint32_t CIR;			/* 完全兼容 */
-	
+
 	__IO uint32_t APB2RSTR;		/* 完全兼容 */
-	__IO uint32_t APB1RSTR;		/* 完全兼容 */	
-	
+	__IO uint32_t APB1RSTR;		/* 完全兼容 */
+
 	__IO uint32_t AHBENR;		/* 不兼容：ADC时钟使能这里设置 */
 	__IO uint32_t APB2ENR;		/* 不兼容：adc时钟使能不在这里 */
 	__IO uint32_t APB1ENR;		/* 兼容 */
@@ -1830,40 +1829,40 @@ void enable_adc_clk(uint8_t cmd)
     /** 使能PWR时钟 */
     reg_temp = ADC_RCC_APB1PCLKEN;
     reg_temp |= RCC_APB1Periph_PWR;
-    ADC_RCC_APB1PCLKEN = reg_temp;         
-    
+    ADC_RCC_APB1PCLKEN = reg_temp;
+
     /** 使能拓展模式 */
     reg_temp = NS_PWR_CR3;
-    reg_temp |= 0x00000001;						          
+    reg_temp |= 0x00000001;
     NS_PWR_CR3 = reg_temp;
 
     /** 使能ADC时钟 */
     reg_temp = ADC_RCC_AHBPCLKEN;
-    reg_temp |= ( RCC_AHB_PERIPH_ADC1 | 
-                  RCC_AHB_PERIPH_ADC2 | 
-                  RCC_AHB_PERIPH_ADC3 | 
-                  RCC_AHB_PERIPH_ADC4   );      
-    ADC_RCC_AHBPCLKEN = reg_temp;             
+    reg_temp |= ( RCC_AHB_PERIPH_ADC1 |
+                  RCC_AHB_PERIPH_ADC2 |
+                  RCC_AHB_PERIPH_ADC3 |
+                  RCC_AHB_PERIPH_ADC4   );
+    ADC_RCC_AHBPCLKEN = reg_temp;
 
     /** 复位外设 */
-    reg_temp = ADC_RCC_AHBPRST;         
-    reg_temp |= ( RCC_AHB_PERIPH_ADC1 | 
-                  RCC_AHB_PERIPH_ADC2 | 
-                  RCC_AHB_PERIPH_ADC3 | 
+    reg_temp = ADC_RCC_AHBPRST;
+    reg_temp |= ( RCC_AHB_PERIPH_ADC1 |
+                  RCC_AHB_PERIPH_ADC2 |
+                  RCC_AHB_PERIPH_ADC3 |
                   RCC_AHB_PERIPH_ADC4   );
     ADC_RCC_AHBPRST = reg_temp;			          // ADC模块复位置位
     ADC_RCC_AHBPRST &= ~reg_temp;             // ADC模块复位清除
 
     /** 设置ADC 1M时钟*/
     reg_temp = ADC_RCC_CFG2;
-    reg_temp &= CFG2_ADC1MSEL_RESET_MASK;		  // HSI 作为ADC 1M时钟		
-    reg_temp &= CFG2_ADC1MPRES_RESET_MASK;	
+    reg_temp &= CFG2_ADC1MSEL_RESET_MASK;		  // HSI 作为ADC 1M时钟
+    reg_temp &= CFG2_ADC1MPRES_RESET_MASK;
     reg_temp |= 7<<11;							          // ADC1M 8M/8=1M
-    
+
     /** 设置ADC PLL分频系数 */
-    reg_temp &= CFG2_ADCPLLPRES_RESET_MASK; 
+    reg_temp &= CFG2_ADCPLLPRES_RESET_MASK;
     reg_temp |= RCC_ADCPLLCLK_DIV4;				    // ADC PLL分频系数
-    
+
     /** 设置ADC HCLK分频系数 */
     reg_temp &= CFG2_ADCHPRES_RESET_MASK;
     reg_temp |= RCC_ADCHCLK_DIV4;				      // ADC HCLK分频系数
@@ -1873,11 +1872,11 @@ void enable_adc_clk(uint8_t cmd)
   {
     /** 关闭ADC时钟 */
       reg_temp = ADC_RCC_AHBPCLKEN;
-      reg_temp &= ~(  RCC_AHB_PERIPH_ADC1 | 
-                      RCC_AHB_PERIPH_ADC2 | 
-                      RCC_AHB_PERIPH_ADC3 | 
-                      RCC_AHB_PERIPH_ADC4   );      
-      ADC_RCC_AHBPCLKEN = reg_temp;        
+      reg_temp &= ~(  RCC_AHB_PERIPH_ADC1 |
+                      RCC_AHB_PERIPH_ADC2 |
+                      RCC_AHB_PERIPH_ADC3 |
+                      RCC_AHB_PERIPH_ADC4   );
+      ADC_RCC_AHBPCLKEN = reg_temp;
   }
 
 }
@@ -1896,8 +1895,8 @@ void ADC_Initial(ADC_Module* NS_ADCx)
     ADC_InitStructure.ExtTrigSelect  = ADC_EXT_TRIGCONV_NONE;       // 无触发
     ADC_InitStructure.DatAlign       = ADC_DAT_ALIGN_R;             // 右对齐
     ADC_InitStructure.ChsNumber      = 2;                           // 扫描通道数
-    ADC_Init(NS_ADCx, &ADC_InitStructure);                          
-	
+    ADC_Init(NS_ADCx, &ADC_InitStructure);
+
     /* ADC regular channel14 configuration */
     ADC_ConfigRegularChannel(NS_ADCx, ADC2_Channel_05_PC4, 2, ADC_SAMP_TIME_55CYCLES5);
     ADC_ConfigRegularChannel(NS_ADCx, ADC2_Channel_12_PC5, 1, ADC_SAMP_TIME_55CYCLES5);
@@ -1908,7 +1907,7 @@ void ADC_Initial(ADC_Module* NS_ADCx)
     /* Enable ADC */
     ADC_Enable(NS_ADCx, 1);
     while(ADC_GetFlagStatusNew(NS_ADCx, ADC_FLAG_RDY) == 0);
-  
+
     /* Start ADC calibration */
     ADC_StartCalibration(NS_ADCx);
     while (ADC_GetCalibrationStatus(NS_ADCx));
@@ -1923,7 +1922,7 @@ void ADC_Initial(ADC_Module* NS_ADCx)
 uint16_t ADC_GetData(ADC_Module* NS_ADCx, uint8_t ADC_Channel)
 {
 	uint16_t dat;
-	
+
   /** 设置通道参数 */
 	ADC_ConfigRegularChannel(NS_ADCx, ADC_Channel, 1, ADC_SAMP_TIME_239CYCLES5);
 
@@ -1943,7 +1942,7 @@ uint16_t ADC_GetData(ADC_Module* NS_ADCx, uint8_t ADC_Channel)
 
 void DMA_DeInit(DMA_ChannelType* DMAyChx)
 {
-    
+
     /* Disable the selected DMAy Channelx */
     DMAyChx->CHCFG &= (uint16_t)(~DMA_CHCFG1_CHEN);
 
@@ -2115,9 +2114,9 @@ void ADC_DMA_init(void)
 
     /** 使能DMA时钟 */
     reg_temp = ADC_RCC_AHBPCLKEN;
-    reg_temp |= ( RCC_AHB_PERIPH_DMA1 | 
-                  RCC_AHB_PERIPH_DMA2    );      
-    ADC_RCC_AHBPCLKEN = reg_temp;  
+    reg_temp |= ( RCC_AHB_PERIPH_DMA1 |
+                  RCC_AHB_PERIPH_DMA2    );
+    ADC_RCC_AHBPCLKEN = reg_temp;
 
     /* DMA channel configuration*/
     DMA_DeInit(USE_DMA_CH);
@@ -2160,7 +2159,7 @@ void ADC_DMA_init(void)
 // ADC
 // ------------------------
 // Init the AD in continuous capture mode
-void MarlinHAL::adc_init() 
+void MarlinHAL::adc_init()
 {
   uint32_t reg_temp;
 
@@ -2168,23 +2167,23 @@ void MarlinHAL::adc_init()
 
   /**  GPIO 设置 */
   reg_temp = ADC_RCC_APB2PCLKEN;
- 	reg_temp |= 0x0f;                 //使能PORT口时钟 
+ 	reg_temp |= 0x0f;                 //使能PORT口时钟
   ADC_RCC_APB2PCLKEN = reg_temp;
 
   // reg_temp = NS_GPIOC_PL_CFG;
   // reg_temp &= 0XFF00FFFF;
-  // NS_GPIOC_PL_CFG = reg_temp;       // PC4/5 anolog输入 
-   
+  // NS_GPIOC_PL_CFG = reg_temp;       // PC4/5 anolog输入
+
   enable_adc_clk(1);                // 使能ADC时钟
   ADC_DMA_init();                   // DMA初始化
   ADC_Initial(NS_ADC2);             // ADC初始化
-  
+
   _delay_ms(2);
   // NS_PINRT("get adc1 = ", HAL_adc_results[0], "\r\n");
   // NS_PINRT("get adc2 = ", HAL_adc_results[1], "\r\n");
 }
 
-// void HAL_adc_init() 
+// void HAL_adc_init()
 // {
 
 //   SERIAL_ECHO_MSG("\r\n n32g45x luke \r\n");
