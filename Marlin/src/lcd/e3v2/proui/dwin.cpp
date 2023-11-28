@@ -2539,18 +2539,12 @@ void ApplyMove() {
 #endif
 
 #if ENABLED(SOUND_MENU_ITEM)
-  void SetEnableSound() {
-    Toggle_Chkb_Line(ui.sound_on);
-  }
-  void SetEnableTick() {
-    Toggle_Chkb_Line(ui.tick_on);
-  }
+  void SetEnableSound() { Toggle_Chkb_Line(ui.sound_on); }
+  void SetEnableTick() { Toggle_Chkb_Line(ui.tick_on); }
 #endif
 
 #if HAS_MESH && USE_GRID_MESHVIEWER
-  void SetViewMesh() {
-    Toggle_Chkb_Line(bedLevelTools.view_mesh);
-  }
+  void SetViewMesh() { Toggle_Chkb_Line(bedLevelTools.view_mesh); }
 #endif
 
 #if HAS_HOME_OFFSET
@@ -2583,9 +2577,7 @@ void ApplyMove() {
   void ProbeDeploy() { probe.deploy(); }
 
   #if HAS_BLTOUCH_HS_MODE && ENABLED(HS_MENU_ITEM)
-    void SetHSMode() {
-      Toggle_Chkb_Line(bltouch.high_speed_mode);
-    }
+    void SetHSMode() { Toggle_Chkb_Line(bltouch.high_speed_mode); }
   #endif
 
 #endif

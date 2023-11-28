@@ -585,16 +585,16 @@ typedef struct SettingsDataStruct {
   #endif
 
   //
-  // 2nd Mesh Viewer
+  // Toggle the meshviwer
   //
-  #if ENABLED(HAS_MESH) && ENABLED(USE_GRID_MESHVIEWER)
+  #if HAS_MESH && USE_GRID_MESHVIEWER
     bool view_mesh;
   #endif
 
   //
   // Bed corner screw position
   //
-  #if BED_SCREW_INSET
+  #ifdef BED_SCREW_INSET
     float ui_screw_pos;
   #endif
 
@@ -634,7 +634,7 @@ typedef struct SettingsDataStruct {
   #endif
 
   //
-  // If LCD has Language > 1
+  // LCD has Language > 1
   //
   #if HAS_MULTI_LANGUAGE
     uint8_t ui_language;                                // M414 S
@@ -1686,7 +1686,7 @@ void MarlinSettings::postprocess() {
     //
     // BED_SCREW_INSET
     //
-    #if BED_SCREW_INSET
+    #ifdef BED_SCREW_INSET
       EEPROM_WRITE(ui.screw_pos);
     #endif
 
@@ -1757,9 +1757,13 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(ui.tick_on);
     #endif
 
-    #if ENABLED(HAS_MESH) && ENABLED(USE_GRID_MESHVIEWER)
+    //
+    // Toggle the meshviewer
+    //
+    #if HAS_MESH && USE_GRID_MESHVIEWER
       EEPROM_WRITE(bedLevelTools.view_mesh);
     #endif
+
     //
     // Fan tachometer check
     //
@@ -2783,9 +2787,9 @@ void MarlinSettings::postprocess() {
       #endif
 
       //
-      //BED_SCREW_INSET
+      // BED_SCREW_INSET
       //
-      #if BED_SCREW_INSET
+      #ifdef BED_SCREW_INSET
         _FIELD_TEST(ui_screw_pos);
         EEPROM_READ(ui.screw_pos);
       #endif
@@ -2801,7 +2805,7 @@ void MarlinSettings::postprocess() {
         _FIELD_TEST(ui_mesh_inset_min_y);
         EEPROM_READ(ui.mesh_inset_min_y);
         _FIELD_TEST(ui_mesh_inset_max_y);
-        EEPROM_READ(ui.mesh_inset_max_y); 
+        EEPROM_READ(ui.mesh_inset_max_y);
       #endif
 
       //
@@ -2862,10 +2866,14 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(ui.tick_on);
       #endif
 
-      #if ENABLED(HAS_MESH) && ENABLED(USE_GRID_MESHVIEWER)
+      //
+      // Toggle the meshviewer
+      //
+      #if HAS_MESH && USE_GRID_MESHVIEWER
         _FIELD_TEST(view_mesh);
         EEPROM_READ(bedLevelTools.view_mesh);
       #endif
+
       //
       // Fan tachometer check
       //
@@ -3332,10 +3340,10 @@ void MarlinSettings::reset() {
   #endif
 
   //
-  //BED_SCREW_INSET
+  // BED_SCREW_INSET
   //
-  #if BED_SCREW_INSET
-    ui.screw_pos = BED_SCREW_INSET; 
+  #ifdef BED_SCREW_INSET
+    ui.screw_pos = BED_SCREW_INSET;
   #endif
 
   //
@@ -3374,7 +3382,10 @@ void MarlinSettings::reset() {
     ui.tick_on = ENABLED(TICK_ON_DEFAULT); //added encoder beep bool
   #endif
 
-  #if ENABLED(HAS_MESH) && ENABLED(USE_GRID_MESHVIEWER)
+  //
+  // Toggle the meshviewer
+  //
+  #if HAS_MESH && USE_GRID_MESHVIEWER
     bedLevelTools.view_mesh = false; //added mesh viewer option
   #endif
 

@@ -55,7 +55,7 @@ typedef struct {
   maxy;
 
   void setnames(const char * const fn);
-  void clears(); 
+  void clears();
 
 } fileprop_t;
 
