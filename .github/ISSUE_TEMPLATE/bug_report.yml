@@ -1,7 +1,7 @@
 name: 🪲 Report a bug
 description: Create a bug report to help improve this Firmware
 title: "[BUG] "
-labels: ["Bug: Potential ?"]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
