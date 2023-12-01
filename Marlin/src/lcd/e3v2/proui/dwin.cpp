@@ -1883,7 +1883,7 @@ void DWIN_Print_Aborted() {
   #ifdef SD_FINISHED_RELEASECOMMAND
     queue.inject(SD_FINISHED_RELEASECOMMAND);
   #endif
-  hostui.notify("Print Aborted");
+  TERN_(HOST_PROMPT_SUPPORT, hostui.notify(GET_TEXT_F(MSG_PRINT_ABORTED)));
   LCD_MESSAGE_F("Print Aborted");
   DWIN_Print_Finished();
 }

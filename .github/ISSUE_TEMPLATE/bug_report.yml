@@ -1,6 +1,7 @@
 name: 🪲 Report a bug
 description: Create a bug report to help improve this Firmware
 title: "[BUG] "
+labels: ["Bug: Potential ?"]
 body:
   - type: markdown
     attributes:
@@ -35,7 +36,7 @@ body:
       placeholder: |
         A does B, supposed to do C.
         X doesn't work.
-        
+
         Please describe the steps needed to reproduce the issue.
         1. [First Step] ...
         2. [Second Step] ...

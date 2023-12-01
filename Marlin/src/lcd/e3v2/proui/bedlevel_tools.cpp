@@ -224,10 +224,9 @@ bool BedLevelToolsClass::meshValidate() {
 
       // Draw value text on
       const uint8_t fs = DWINUI::fontWidth(meshfont);
-      xy_uint_t offset;
-      offset.y = cell_height_px / 2 - fs;
+      const int8_t offset_y = cell_height_px / 2 - fs;
       if (isnan(bedlevel.z_values[x][y])) {  // undefined
-        DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px + cell_width_px / 2 - 5, start_y_px + offset.y, F("X"));
+        DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px + cell_width_px / 2 - 5, start_y_px + offset_y, F("X"));
       }
       else {                          // has value
         MString<12> msg;
@@ -235,10 +234,10 @@ bool BedLevelToolsClass::meshValidate() {
           msg.set(p_float_t(abs(bedlevel.z_values[x][y]), 2));
         else
           msg.setf(F("%02i"), uint16_t(abs(bedlevel.z_values[x][y] - int16_t(bedlevel.z_values[x][y])) * 100));
-        offset.x = cell_width_px / 2 - (fs / 2) * msg.length() - 2;
+        const int8_t offset_x = cell_width_px / 2 - (fs / 2) * msg.length() - 2;
         if ((GRID_MAX_POINTS_X) >= TERN(TJC_DISPLAY, 8, 10))
-          DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px - 2 + offset.x, start_y_px + offset.y, F("."));
-        DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px + 1 + offset.x, start_y_px + offset.y, msg);
+          DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px - 2 + offset_x, start_y_px + offset_y, F("."));
+        DWIN_Draw_String(false, meshfont, DWINUI::textcolor, DWINUI::backcolor, start_x_px + 1 + offset_x, start_y_px + offset_y, msg);
       }
       safe_delay(10);
       LCD_SERIAL.flushTX();
