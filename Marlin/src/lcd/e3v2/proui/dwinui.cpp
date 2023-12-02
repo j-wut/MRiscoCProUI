@@ -334,7 +334,7 @@ void TitleClass::draw() {
 }
 
 void TitleClass::SetCaption(const char * const title) {
-  frameid = 0;
+  // frameid = 0;
   if ( caption == title ) return;
   const uint8_t len = _MIN(sizeof(caption) - 1, strlen(title));
   memcpy(&caption[0], title, len);
@@ -346,23 +346,23 @@ void TitleClass::ShowCaption(const char * const title) {
   draw();
 }
 
-void TitleClass::SetFrame(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-  caption[0] = '\0';
-  frameid = id;
-  frame = { x1, y1, x2, y2 };
-}
+// void TitleClass::SetFrame(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+//   caption[0] = '\0';
+//   frameid = id;
+//   frame = { x1, y1, x2, y2 };
+// }
 
-void TitleClass::SetFrame(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-  SetFrame(1, x, y, x + w - 1, y + h - 1);
-}
+// void TitleClass::SetFrame(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+//   SetFrame(1, x, y, x + w - 1, y + h - 1);
+// }
 
-void TitleClass::FrameCopy(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-  SetFrame(id, x1, y1, x2, y2);
-  draw();
-}
+// void TitleClass::FrameCopy(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+//   SetFrame(id, x1, y1, x2, y2);
+//   draw();
+// }
 
-void TitleClass::FrameCopy(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-  FrameCopy(1, x, y, x + w - 1, y + h - 1);
-}
+// void TitleClass::FrameCopy(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+//   FrameCopy(1, x, y, x + w - 1, y + h - 1);
+// }
 
 #endif // DWIN_LCD_PROUI

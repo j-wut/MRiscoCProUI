@@ -34,31 +34,31 @@
 //  QR_Pixel: The pixel size occupied by each point of the QR code: 0x01-0x0F (1-16)
 //  (Nx, Ny): The coordinates of the upper left corner displayed by the QR code
 //  str: multi-bit data
-void DWIN_Draw_QR(uint8_t QR_Pixel, uint16_t x, uint16_t y, char *string) {
-  size_t i = 0;
-  DWIN_Byte(i, 0x21);
-  DWIN_Word(i, x);
-  DWIN_Word(i, y);
-  DWIN_Byte(i, QR_Pixel);
-  DWIN_Text(i, string);
-  DWIN_Send(i);
-}
+// void DWIN_Draw_QR(uint8_t QR_Pixel, uint16_t x, uint16_t y, char *string) {
+//   size_t i = 0;
+//   DWIN_Byte(i, 0x21);
+//   DWIN_Word(i, x);
+//   DWIN_Word(i, y);
+//   DWIN_Byte(i, QR_Pixel);
+//   DWIN_Text(i, string);
+//   DWIN_Send(i);
+// }
 
 // Copy area from current virtual display area to current screen
 //  xStart/yStart: Upper-left of virtual area
 //  xEnd/yEnd: Lower-right of virtual area
 //  x/y: Screen paste point
-void DWIN_Frame_AreaCopy(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
-  size_t i = 0;
-  DWIN_Byte(i, 0x26);
-  DWIN_Word(i, xStart);
-  DWIN_Word(i, yStart);
-  DWIN_Word(i, xEnd);
-  DWIN_Word(i, yEnd);
-  DWIN_Word(i, x);
-  DWIN_Word(i, y);
-  DWIN_Send(i);
-}
+// void DWIN_Frame_AreaCopy(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
+//   size_t i = 0;
+//   DWIN_Byte(i, 0x26);
+//   DWIN_Word(i, xStart);
+//   DWIN_Word(i, yStart);
+//   DWIN_Word(i, xEnd);
+//   DWIN_Word(i, yEnd);
+//   DWIN_Word(i, x);
+//   DWIN_Word(i, y);
+//   DWIN_Send(i);
+// }
 
 // Copy area from virtual display area to current screen
 //  IBD: background display: 0=Background filtering is not displayed, 1=Background display \\When setting the background filtering not to display, the background must be pure black
@@ -68,27 +68,27 @@ void DWIN_Frame_AreaCopy(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16
 //  xStart/yStart: Upper-left of virtual area
 //  xEnd/yEnd: Lower-right of virtual area
 //  x/y: Screen paste point
-void DWIN_Frame_AreaCopy(bool IBD, bool BIR, bool BFI, uint8_t cacheID, uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
-  size_t i = 0;
-  DWIN_Byte(i, 0x27);
-  DWIN_Byte(i, (IBD & 1) << 7 | (BIR & 1) << 6 | (BFI & 1) << 5 | cacheID);
-  DWIN_Word(i, xStart);
-  DWIN_Word(i, yStart);
-  DWIN_Word(i, xEnd);
-  DWIN_Word(i, yEnd);
-  DWIN_Word(i, x);
-  DWIN_Word(i, y);
-  DWIN_Send(i);
-}
+// void DWIN_Frame_AreaCopy(bool IBD, bool BIR, bool BFI, uint8_t cacheID, uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
+//   size_t i = 0;
+//   DWIN_Byte(i, 0x27);
+//   DWIN_Byte(i, (IBD & 1) << 7 | (BIR & 1) << 6 | (BFI & 1) << 5 | cacheID);
+//   DWIN_Word(i, xStart);
+//   DWIN_Word(i, yStart);
+//   DWIN_Word(i, xEnd);
+//   DWIN_Word(i, yEnd);
+//   DWIN_Word(i, x);
+//   DWIN_Word(i, y);
+//   DWIN_Send(i);
+// }
 
 // Copy area from virtual display area to current screen with transparent background
 //  cacheID: virtual area number
 //  xStart/yStart: Upper-left of virtual area
 //  xEnd/yEnd: Lower-right of virtual area
 //  x/y: Screen paste point
-void DWIN_Frame_AreaCopy(uint8_t cacheID, uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
-  DWIN_Frame_AreaCopy(false, false, true, cacheID, xStart, yStart, xEnd, yEnd, x, y);
-}
+// void DWIN_Frame_AreaCopy(uint8_t cacheID, uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd, uint16_t x, uint16_t y) {
+//   DWIN_Frame_AreaCopy(false, false, true, cacheID, xStart, yStart, xEnd, yEnd, x, y);
+// }
 
 // Write buffer data to the SRAM or Flash
 //  mem: 0x5A=32KB SRAM, 0xA5=16KB Flash

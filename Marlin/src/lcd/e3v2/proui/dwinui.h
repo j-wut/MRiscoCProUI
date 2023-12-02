@@ -235,17 +235,17 @@ typedef struct { uint16_t x, y, w, h; } frame_rect_t;
 class TitleClass {
 public:
   char caption[32] = "";
-  uint8_t frameid = 0;
+  // uint8_t frameid = 0;
   rect_t frame = {0};
   void draw();
   void SetCaption(const char * const title);
   inline void SetCaption(FSTR_P title) { SetCaption((char *)title); }
   void ShowCaption(const char * const title);
   inline void ShowCaption(FSTR_P title) { ShowCaption((char *)title); }
-  void SetFrame(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
-  void SetFrame(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-  void FrameCopy(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
-  void FrameCopy(uint16_t x, uint16_t y, uint16_t h, uint16_t v);
+  // void SetFrame(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+  // void SetFrame(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+  // void FrameCopy(uint8_t id, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+  // void FrameCopy(uint16_t x, uint16_t y, uint16_t h, uint16_t v);
 };
 extern TitleClass Title;
 

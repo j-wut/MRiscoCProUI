@@ -66,7 +66,7 @@ void fileprop_t::clears() {
 void getValue(const char * const buf, PGM_P const key, float &value) {
   if (value != 0.0f) return;
 
-  char *posptr = strstr_P(buf, key);
+  const char *posptr = strstr_P(buf, key);
   if (posptr == nullptr) return;
 
   char num[10] = "";
@@ -84,7 +84,7 @@ void getValue(const char * const buf, PGM_P const key, float &value) {
 
 bool Preview::hasPreview() {
   const char * const tbstart = PSTR("; thumbnail begin " STRINGIFY(THUMBWIDTH) "x" STRINGIFY(THUMBHEIGHT));
-  char *posptr = nullptr;
+  const char *posptr = nullptr;
   uint32_t indx = 0;
   float tmp = 0;
 
