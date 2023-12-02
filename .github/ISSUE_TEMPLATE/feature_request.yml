@@ -1,7 +1,7 @@
 name: ✨ Feature Request
 description: Request a new Firmware feature or Share an idea
 title: "[FR] "
-labels: 'Feature Request'
+labels: ["Feature Request"]
 body:
   - type: markdown
     attributes:
@@ -19,7 +19,7 @@ body:
 
         - Check the latest [branch](https://github.com/classicrocker883/MriscocProUI) to see if the feature already exists.
 
-        - Before you proceed, please consider all aspects necessary to make it into a firmware feature, or what may be involved building and testing it before it becomes fully ulilized in the next updated release.  
+        - Before you proceed, please consider all aspects necessary to make it into a firmware feature, or what may be involved building and testing it before it becomes fully ulilized in the next updated release.
         Also think if it may be better suited for a slicer or host feature.
 
   - type: textarea
