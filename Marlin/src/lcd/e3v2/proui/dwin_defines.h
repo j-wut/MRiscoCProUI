@@ -81,13 +81,13 @@
 // Only for Professional Firmware UI extensions
 //=============================================================================
 
-// #if ENABLED(HAS_GCODE_PREVIEW) && DISABLED(PROUI_EX)
+// #if HAS_GCODE_PREVIEW && DISABLED(PROUI_EX)
 //   #error "HAS_GCODE_PREVIEW requires PROUI_EX."
 // #endif
-#if ENABLED(HAS_TOOLBAR) && DISABLED(PROUI_EX)
+#if HAS_TOOLBAR && !PROUI_EX
   #error "HAS_TOOLBAR requires PROUI_EX."
 #endif
-#if ENABLED(CV_LASER_MODULE) && DISABLED(PROUI_EX)
+#if ENABLED(CV_LASER_MODULE) && !PROUI_EX
   #error "CV_LASER_MODULE requires PROUI_EX."
 #endif
 

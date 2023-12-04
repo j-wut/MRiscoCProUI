@@ -40,7 +40,7 @@
 
 BedLevelToolsClass bedLevelTools;
 
-#if ENABLED(USE_GRID_MESHVIEWER)
+#if USE_GRID_MESHVIEWER
   bool BedLevelToolsClass::view_mesh = false;
 #endif
 bool BedLevelToolsClass::goto_mesh_value = false;
@@ -184,7 +184,7 @@ bool BedLevelToolsClass::meshValidate() {
   return true;
 }
 
-#if ENABLED(USE_GRID_MESHVIEWER)
+#if USE_GRID_MESHVIEWER
 
   constexpr uint8_t meshfont = TERN(TJC_DISPLAY, font8x16, font6x12);
 
