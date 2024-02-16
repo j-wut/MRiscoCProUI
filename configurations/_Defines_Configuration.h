@@ -133,7 +133,7 @@
 // #define AUTO_POWER_E_TEMP        50
 // #define AUTO_POWER_CHAMBER_TEMP  30
 // #define AUTO_POWER_COOLER_TEMP   26
-// #define TEMP_SENSOR_0 1
+#define TEMP_SENSOR_0 1047
 // #define TEMP_SENSOR_1 0
 // #define TEMP_SENSOR_2 0
 // #define TEMP_SENSOR_3 0
@@ -178,7 +178,7 @@
 // #define HEATER_7_MINTEMP   5
 // #define BED_MINTEMP        0
 // #define CHAMBER_MINTEMP    5
-// #define HEATER_0_MAXTEMP 315
+#define HEATER_0_MAXTEMP 415
 // #define HEATER_1_MAXTEMP 275
 // #define HEATER_2_MAXTEMP 275
 // #define HEATER_3_MAXTEMP 275
