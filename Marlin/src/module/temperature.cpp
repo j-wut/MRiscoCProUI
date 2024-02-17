@@ -1013,7 +1013,7 @@ volatile bool Temperature::raw_temps_ready = false;
     sample_distance = 1;
     t1_time = 0;
 
-    hotend.target = 200.0f;   // So M105 looks nice
+    hotend.target = 290.0f;   // So M105 looks nice
     hotend.soft_pwm_amount = (MPC_MAX) >> 1;
 
     // Initialise rate of change to to steady state at current time
